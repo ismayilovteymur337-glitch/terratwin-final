@@ -26,12 +26,56 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 # The key lives only on the server. It is never sent to the browser, never logged and is
 # removed from every error text (see redact()). It comes from backend/.env or, if the user
 # types it into the Settings panel, from memory for the lifetime of the process.
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
-AGENT_MODEL = os.getenv("AGENT_MODEL", "claude-sonnet-5-5")
-KEY_SOURCE = "env" if ANTHROPIC_API_KEY else None
-
 MODEL_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{2,79}$")
 KEY_RE = re.compile(r"^[A-Za-z0-9_\-]{20,300}$")
+
+
+def _shared_key_files() -> list[Path]:
+    """Where the TerraTwin (Mars) app keeps its key, for every folder layout we ship.
+    terratwin/earth/backend -> terratwin/.env(.local); terratwin final/backend -> ../terratwin/.env(.local);
+    the GitHub repo -> moon-review/.env(.local); plus the other Meridian copy's backend/.env."""
+    here = BASE_DIR
+    roots = [here.parent.parent, here.parent.parent / "terratwin", here.parent / "moon-review", here.parent / "terratwin"]
+    files: list[Path] = []
+    for r in roots:
+        files += [r / ".env.local", r / ".env"]
+    files += [here.parent.parent / "terratwin final" / "backend" / ".env", here.parent.parent / "terratwin" / "earth" / "backend" / ".env"]
+    own = (here / ".env").resolve()
+    out, seen = [], {own}
+    for f in files:
+        try:
+            rf = f.resolve()
+        except OSError:
+            continue
+        if rf not in seen:
+            seen.add(rf); out.append(f)
+    return out
+
+
+def _shared_key() -> str:
+    """One key for both apps: if Meridian has no key of its own, use the one TerraTwin (Mars) already uses.
+    Read on the server only; never logged or sent to the browser."""
+    for f in _shared_key_files():
+        try:
+            if not f.is_file():
+                continue
+            for line in f.read_text(encoding="utf-8", errors="ignore").splitlines():
+                line = line.strip()
+                if line.startswith("ANTHROPIC_API_KEY="):
+                    v = line.partition("=")[2].strip().strip('"').strip("'")
+                    if KEY_RE.match(v):
+                        return v
+        except OSError:
+            continue
+    return ""
+
+
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip()
+KEY_SOURCE = "env" if ANTHROPIC_API_KEY else None
+if not ANTHROPIC_API_KEY:
+    ANTHROPIC_API_KEY = _shared_key()
+    KEY_SOURCE = "shared" if ANTHROPIC_API_KEY else None
+AGENT_MODEL = os.getenv("AGENT_MODEL", "claude-sonnet-5-5")
 # Shown when the live list cannot be fetched. Any other id can still be typed in.
 KNOWN_MODELS = [
     ("claude-fable-5-2", "Claude Fable 5.2"), ("claude-opus-5-5", "Claude Opus 5.5"),
