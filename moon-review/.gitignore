@@ -1,0 +1,13 @@
+node_modules/
+dist/
+*.log
+*.zip
+.backups/
+scripts/cache/
+data/raw/
+
+.env.local
+
+.env
+.env.*
+!.env.example

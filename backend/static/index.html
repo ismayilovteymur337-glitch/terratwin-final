@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meridian — Geospatial Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="app" id="app" data-view="map">
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark"></span>MERIDIAN<small>Geospatial intelligence</small></div>
+    <div class="topbar-right">
+      <span class="topnote faint" id="topnote"></span>
+      <button class="mars-btn" id="mars-open" type="button" title="Open the TerraTwin 3D Mars explorer">
+        <span class="mars-btn-orb" aria-hidden="true"></span>Mars 3D
+      </button>
+      <button class="model-chip" id="model-chip" data-act="open-settings" title="Model and API key settings"></button>
+      <button class="icon-btn" data-act="open-settings" aria-label="Settings" title="Settings">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      </button>
+    </div>
+  </header>
+    <nav class="viewbar" id="viewbar" aria-label="Panels">
+      <button data-view="agent">Agent</button><button data-view="map" class="on">Map</button><button data-view="results">Results</button>
+    </nav>
+
+  <aside class="agent">
+    <header class="panel-head">
+      <div><div class="eyebrow">Research agent</div><div class="panel-title">Ask about any place, for any purpose</div></div>
+      <button class="badge" id="badge" data-act="open-settings">…</button>
+    </header>
+    <div class="agent-scroll" id="chat"></div>
+    <div class="composer">
+      <div id="chip"></div>
+      <div class="composer-row">
+        <textarea id="draft" rows="2" placeholder="Find the best locations for…"></textarea>
+        <button class="send" id="send" disabled>Run</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="map-col">
+    <div class="map-wrap">
+      <div id="map" class="map-canvas"></div>
+      <div id="box" class="map-box" style="display:none"></div>
+      <div id="maperr"></div>
+      <div class="map-controls">
+        <div class="seg" id="basemaps"></div>
+        <div class="layer-card" id="layers"></div>
+      </div>
+      <div class="map-legend" id="legend"></div>
+      <div class="map-tip" id="tip" style="display:none"></div>
+    </div>
+  </main>
+
+  <aside class="results">
+    <header class="panel-head"><div><div class="eyebrow" id="r-eyebrow">Results</div><div class="panel-title" id="r-title">No analysis yet</div></div></header>
+    <nav class="tabs" id="tabs"></nav>
+    <div class="results-scroll" id="results"></div>
+  </aside>
+</div>
+<div class="mars-portal" id="mars-portal" hidden aria-label="TerraTwin 3D Mars">
+  <iframe id="mars-frame" title="TerraTwin 3D Mars" allow="fullscreen" referrerpolicy="no-referrer"></iframe>
+  <div class="mars-status" id="mars-status">
+    <div class="mars-status-orb" aria-hidden="true"></div>
+    <div class="mars-status-text" id="mars-status-text">Travelling to Mars…</div>
+    <button class="earth-btn" type="button" data-earth>
+      <span class="earth-btn-orb" aria-hidden="true"></span>Back to Earth
+    </button>
+  </div>
+  <button class="earth-btn earth-btn-float" id="earth-float" type="button" data-earth hidden>
+    <span class="earth-btn-orb" aria-hidden="true"></span>Back to Earth
+  </button>
+</div>
+<div class="overlay" id="overlay" hidden></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="print-report" id="print"></div>
+<script>
+/* Leaflet (BSD-2-Clause): served from this app if `python -m app.vendor` was run,
+   otherwise from unpkg. The interface still works without it, minus the map. */
+(function () {
+  var CDN = "https://unpkg.com/leaflet@1.9.4/dist/", started = false;
+  function css(href, onerror) { var l = document.createElement("link"); l.rel = "stylesheet"; l.href = href; l.onerror = onerror; document.head.appendChild(l); }
+  function js(src, onload, onerror) { var s = document.createElement("script"); s.src = src; s.onload = onload; s.onerror = onerror; document.head.appendChild(s); }
+  function start() { if (started) return; started = true; js("/app.js"); }
+  js("/mars-portal.js");
+  css("/vendor/leaflet.css", function () { css(CDN + "leaflet.css"); });
+  js("/vendor/leaflet.js", start, function () { js(CDN + "leaflet.js", start, start); });
+})();
+</script>
+</body>
+</html>
