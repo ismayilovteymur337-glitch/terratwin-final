@@ -164,7 +164,7 @@ function closeSettings() { S.dlg.open = false; $("#overlay").hidden = true; $("#
 function renderSettings() {
   const st = S.settings || {}, d = S.dlg, ms = S.models?.models || [], cur = S.model || "";
   const inList = !cur || ms.some((m) => m.id === cur), custom = d.custom || !inList;
-  const src = st.key_source === "env" ? "saved in backend/.env" : st.key_source === "shared" ? "shared with TerraTwin (Mars)" : "kept in memory until the server restarts";
+  const src = st.key_source === "env" ? "saved in backend/.env" : "kept in memory until the server restarts";
   $("#overlay").innerHTML = `<div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
     <header><h2 id="dlg-title">Settings</h2><button class="x" data-act="close-settings" aria-label="Close">×</button></header>
     <section>
@@ -175,7 +175,7 @@ function renderSettings() {
         <button class="btn primary" type="submit" ${d.busy ? "disabled" : ""}>${d.busy ? "Checking…" : "Save key"}</button>
         ${st.has_key ? `<button class="btn" type="button" data-act="remove-key" ${d.busy ? "disabled" : ""}>Remove</button>` : ""}
       </form>
-      <label class="check"><input type="checkbox" id="key-remember" checked> Remember on this computer <span class="faint">(writes backend/.env)</span></label>
+      <label class="check"><input type="checkbox" id="key-remember"> Remember on this computer <span class="faint">(writes backend/.env)</span></label>
       <p class="fine">One key is enough for every Claude model. It goes only to the Meridian server on this computer, which calls Anthropic. It is never sent back to the browser, never shown again (only the last four characters), and is stripped from error messages.</p>
       ${d.status ? `<div class="status ${d.status.kind}">${esc(d.status.text)}</div>` : ""}
     </section>
