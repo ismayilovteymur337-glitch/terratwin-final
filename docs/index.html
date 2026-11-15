@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TerraTwin × Meridian · NASA Space Apps 2026</title>
+<meta name="description" content="Click any spot on Mars and meet its twin on Earth. 3D Mars terrain, explained routes and rover planning, built on NASA data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400..800&family=Inter:wght@400;600&display=swap">
+<style>
+:root{--ink:#0B1020;--mid:#121A33;--card:#1B2547;--line:#2F3B66;--paper:#F3EEE6;--mars:#E8743B;--earth:#5FC4B0;--muted:#AEB8D0}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--paper);font-family:Inter,Arial,sans-serif;line-height:1.6;font-size:18px}
+a{color:var(--earth)}
+h1,h2,h3{font-family:'DM Sans',Inter,Arial,sans-serif;line-height:1.1;margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+nav{position:sticky;top:0;background:rgba(11,16,32,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:5}
+nav .wrap{display:flex;gap:24px;align-items:center;justify-content:space-between;height:60px}
+nav b{font-family:'DM Sans',sans-serif;font-size:20px}
+nav div a{margin-left:20px;color:var(--muted);text-decoration:none;font-size:16px}
+nav div a:hover{color:var(--paper)}
+.hero{padding:96px 0 72px;display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:center}
+.eyebrow{font-size:14px;font-weight:600;letter-spacing:.2em;color:var(--mars);text-transform:uppercase;margin:0 0 16px}
+h1{font-size:clamp(44px,7vw,80px);font-weight:700}
+.lead{font-size:24px;color:var(--paper);margin:24px 0 8px}
+.sub{color:var(--muted)}
+.planets{width:100%;height:auto}
+section{padding:64px 0;border-top:1px solid var(--line)}
+section.alt{background:var(--mid)}
+h2{font-size:clamp(32px,4.5vw,48px);font-weight:700;margin-bottom:12px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:32px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;border-top:6px solid var(--mars)}
+.card.e{border-top-color:var(--earth)}
+.card.p{border-top-color:var(--paper)}
+.card h3{font-size:26px;margin-bottom:10px}
+.card p{margin:0;color:var(--muted)}
+.num{font-size:14px;font-weight:600;color:var(--mars);margin-bottom:8px;display:block}
+.steps{counter-reset:s;list-style:none;padding:0;margin:32px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.steps li{counter-increment:s;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+.steps li::before{content:counter(s);display:block;font-family:'DM Sans',sans-serif;font-weight:700;font-size:32px;color:var(--earth);margin-bottom:6px}
+table{width:100%;border-collapse:collapse;margin-top:24px;font-size:16px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600}
+.pill{display:inline-block;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 14px;margin:4px 6px 0 0;font-size:15px}
+.note{color:var(--muted);font-size:15px;margin-top:16px}
+footer{padding:40px 0;color:var(--muted);font-size:15px;border-top:1px solid var(--line)}
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:56px}nav div a{margin-left:12px;font-size:14px}}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><b>TerraTwin × Meridian</b><div><a href="#what">What it does</a><a href="#how">How it works</a><a href="#data">NASA data</a><a href="#run">Run it</a></div></div></nav>
+
+<header class="wrap hero">
+<div>
+<p class="eyebrow">NASA Space Apps Challenge 2026 · Earth analogs</p>
+<h1>Click any spot on Mars. Meet its twin on Earth.</h1>
+<p class="lead">3D Mars terrain, a ranked Earth analog for every point, and explained routes for the rover that fits the journey.</p>
+<p class="sub">TerraTwin (Mars 3D) and Meridian (Earth geospatial AI) are one click apart.</p>
+</div>
+<svg class="planets" viewBox="0 0 400 400" role="img" aria-label="Mars and Earth connected by a dashed line">
+<defs>
+<radialGradient id="gm" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#F4A06E"/><stop offset="1" stop-color="#9C3D1A"/></radialGradient>
+<radialGradient id="ge" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#93E3D2"/><stop offset="1" stop-color="#23706A"/></radialGradient>
+</defs>
+<path d="M135 235 Q 200 190 235 165" fill="none" stroke="#F3EEE6" stroke-width="3" stroke-dasharray="10 10" opacity=".7"/>
+<circle cx="280" cy="125" r="105" fill="url(#ge)"/>
+<circle cx="110" cy="285" r="75" fill="url(#gm)"/>
+<circle cx="250" cy="95" r="13" fill="#23706A" opacity=".55"/><circle cx="305" cy="160" r="19" fill="#23706A" opacity=".45"/>
+<circle cx="90" cy="260" r="11" fill="#7A2E12" opacity=".5"/><circle cx="130" cy="310" r="15" fill="#7A2E12" opacity=".45"/>
+</svg>
+</header>
+
+<section id="what" class="alt"><div class="wrap">
+<h2>Choosing an Earth analog is still guesswork</h2>
+<p class="sub">Data lives in different portals, matches come without reasons, and site choice is separate from route and rover planning.</p>
+<div class="grid3">
+<div class="card"><span class="num">01</span><h3>Earth Analog Finder</h3><p>Pick a point on Mars and get the best Earth twin with the reasons shown. Matches use literature tags for landforms, minerals and habitability, plus environment levels that are labelled as assumptions, not measurements. 23 Earth sites, 8 Mars targets.</p></div>
+<div class="card e"><span class="num">02</span><h3>What Earth cannot reproduce</h3><p>Every twin shows its limits: gravity (3.71 vs 9.81 m/s²), surface pressure (about 6 vs 1,013 mbar) and radiation measured by Curiosity RAD. Earth climate for each twin comes from NASA POWER.</p></div>
+<div class="card p"><span class="num">03</span><h3>Three routes, explained</h3><p>Safest, Science and Direct routes between two points. Each says why it is safe or dangerous for the chosen rover, the best rover for the drawn route is ranked, and the rover drives A to B on the 3D globe.</p></div>
+</div>
+</div></section>
+
+<section id="how"><div class="wrap">
+<h2>How it works</h2>
+<ol class="steps">
+<li>Click a point on the 3D Mars globe</li>
+<li>Get the best Earth twin, with reasons</li>
+<li>Compare three explained routes</li>
+<li>Watch the best rover drive A to B</li>
+</ol>
+<p class="note">The Mars 3D and Back to Earth buttons switch between TerraTwin and the Meridian Earth map. A dark mode and a Claude assistant (server side API key) are built in.</p>
+</div></section>
+
+<section id="data" class="alt"><div class="wrap">
+<h2>Built on NASA data</h2>
+<table>
+<tr><th>Layer</th><th>Source</th><th>Used for</th></tr>
+<tr><td>Mars elevation</td><td><a href="https://pds-geosciences.wustl.edu/mgs/mgs-m-mola-5-megdr-l3-v1/mgsl_300x/meg016/">MOLA (NASA PDS)</a></td><td>3D globe, slopes, route planning</td></tr>
+<tr><td>Mars imagery</td><td><a href="https://trek.nasa.gov/mars/">NASA Mars Trek</a></td><td>Viking, MOLA relief, CTX and HiRISE layers</td></tr>
+<tr><td>Radiation</td><td><a href="https://pds-ppi.igpp.ucla.edu/search/view/?id=pds://PPI/MSL-M-RAD-2-EDR-V1.0">Curiosity RAD (NASA PDS)</a></td><td>What Earth cannot reproduce</td></tr>
+<tr><td>Ground ice</td><td><a href="https://pds-geosciences.wustl.edu/missions/odyssey/grs.html">Mars Odyssey GRS (NASA PDS)</a></td><td>Earth twin profile</td></tr>
+<tr><td>Earth climate</td><td><a href="https://power.larc.nasa.gov/">NASA POWER</a></td><td>Real annual climate beside each twin</td></tr>
+<tr><td>Physical values</td><td><a href="https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html">NASA Mars fact sheet</a></td><td>Gravity and pressure</td></tr>
+<tr><td>Rover models</td><td><a href="https://science.nasa.gov/3d-resources/">NASA 3D Resources</a></td><td>Rover fleet studio</td></tr>
+</table>
+<p class="note">HiRISE and CTX terrain models come from NASA missions and are hosted by USGS and AWS Open Data. Meridian's Earth map also uses World Bank, ISRIC SoilGrids, ILOSTAT and OpenStreetMap, which are not NASA data.</p>
+</div></section>
+
+<section id="run"><div class="wrap">
+<h2>Run it</h2>
+<p class="sub">The full app needs a Node server (Mars) and a Python server (Earth), so this page is a showcase. Source code and the one click launcher are in the repository.</p>
+<p><span class="pill">React + three.js</span><span class="pill">Node</span><span class="pill">Python + Starlette</span><span class="pill">Leaflet</span><span class="pill">Claude</span></p>
+<p><a href="https://github.com/ismayilovteymur337-glitch/terratwin-final">github.com/ismayilovteymur337-glitch/terratwin-final</a></p>
+</div></section>
+
+<footer><div class="wrap">TerraTwin × Meridian · NASA Space Apps Challenge 2026 · [Team name]</div></footer>
+</body>
+</html>
